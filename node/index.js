@@ -1,11 +1,13 @@
 const mysql = require('mysql');
+const express = require('express');
 
-const con = mysql.createConnection({
+const conf = {
   host: 'pfa_sql',
   user: 'root',
   password: 'rootpfa',
   database: 'pfa',
-})
+}
+let con = mysql.createConnection(conf);
 
 con.connect(err => {
   if (err) throw err;
@@ -43,4 +45,25 @@ con.query("SELECT * FROM topics", (err, result) => {
   });
 
   con.end();
+});
+
+const app = express();
+
+app.get('/', (req, res) => {
+  con = mysql.createConnection(conf);
+  con.connect(err => {
+    if (err) res.status(500).send('DB error!');
+
+    con.query("SELECT * FROM topics", (err, result) => {
+      if (err) res.status(500).send(JSON.stringify({ message: 'Error when operating DB!' }));
+      con.end();
+      res.send(result);
+    })
+
+  });
+
+});
+
+app.listen(3000, () => {
+  console.log('Server running!');
 });
