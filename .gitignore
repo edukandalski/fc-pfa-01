@@ -1,2 +1,4 @@
 sql/mysql/*
 !sql/mysql/.placeholder
+mysql/*
+!/mysql/.placeholder
